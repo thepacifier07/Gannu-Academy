@@ -1,0 +1,22 @@
+{
+  "classId": "class-6",
+  "className": "Class 6",
+  "subjectId": "science",
+  "subjectName": "Science",
+  "chapters": [
+    {
+      "id": "plants",
+      "name": "Plants",
+      "questions": [
+        {
+          "question": "What is photosynthesis?",
+          "answer": "Photosynthesis is the process by which green plants make their food."
+        },
+        {
+          "question": "Why are plants green?",
+          "answer": "Plants are green because they contain chlorophyll."
+        }
+      ]
+    }
+  ]
+}
