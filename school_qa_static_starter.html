@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Q&A Library</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3ee;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 220px);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 16px 48px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .selectors {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      background: #fff;
+    }
+
+    select:disabled, input:disabled {
+      background: #f3f4f6;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .breadcrumbs {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .status {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .chapter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .chapter-head h2 {
+      margin: 0 0 6px;
+      font-size: 1.5rem;
+    }
+
+    .chapter-meta {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .qa-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .qa-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .qa-card button {
+      width: 100%;
+      text-align: left;
+      padding: 16px 18px;
+      background: transparent;
+      border: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .qa-card button:hover {
+      background: #f8fafc;
+    }
+
+    .qa-answer {
+      padding: 0 18px 18px;
+      color: #374151;
+      line-height: 1.7;
+      display: none;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .qa-card.open .qa-answer {
+      display: block;
+      padding-top: 14px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 760px) {
+      .selectors {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>School Question & Answer Library</h1>
+      <p>Select a class, subject, and chapter to view chapter-wise questions and answers. This starter project uses a static site with separate JSON files for each class and subject.</p>
+    </section>
+
+    <section class="panel">
+      <div class="selectors">
+        <div>
+          <label for="classSelect">Class</label>
+          <select id="classSelect">
+            <option value="">Select Class</option>
+          </select>
+        </div>
+        <div>
+          <label for="subjectSelect">Subject</label>
+          <select id="subjectSelect" disabled>
+            <option value="">Select Subject</option>
+          </select>
+        </div>
+        <div>
+          <label for="chapterSelect">Chapter</label>
+          <select id="chapterSelect" disabled>
+            <option value="">Select Chapter</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="breadcrumbs" id="breadcrumbs">No chapter selected</div>
+        <div style="min-width:260px; flex:1; max-width:360px;">
+          <label for="searchInput">Search in questions</label>
+          <input id="searchInput" type="text" placeholder="Type a keyword..." disabled />
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="contentPanel">
+      <p class="status" id="status">Choose a class, subject, and chapter to load content.</p>
+      <div id="chapterContent" hidden>
+        <div class="chapter-head">
+          <div>
+            <h2 id="chapterTitle"></h2>
+            <p class="chapter-meta" id="chapterMeta"></p>
+          </div>
+          <div class="pill" id="questionCount"></div>
+        </div>
+        <div class="qa-list" id="qaList"></div>
+      </div>
+    </section>
+
+    <p class="footer-note">Tip: keep your JSON files inside a data folder and host this project on any static hosting service.</p>
+  </div>
+
+  <script>
+    const classSelect = document.getElementById('classSelect');
+    const subjectSelect = document.getElementById('subjectSelect');
+    const chapterSelect = document.getElementById('chapterSelect');
+    const searchInput = document.getElementById('searchInput');
+    const statusEl = document.getElementById('status');
+    const breadcrumbsEl = document.getElementById('breadcrumbs');
+    const chapterContent = document.getElementById('chapterContent');
+    const chapterTitle = document.getElementById('chapterTitle');
+    const chapterMeta = document.getElementById('chapterMeta');
+    const questionCount = document.getElementById('questionCount');
+    const qaList = document.getElementById('qaList');
+
+    let catalog = null;
+    let currentSubjectData = null;
+    let currentChapter = null;
+
+    async function loadCatalog() {
+      try {
+        const response = await fetch('./data/catalog.json');
+        if (!response.ok) throw new Error('Could not load catalog.json');
+        catalog = await response.json();
+        populateClasses();
+        hydrateFromUrl();
+      } catch (error) {
+        setStatus('Could not load the catalog. Make sure you are serving the site from a local server and that data/catalog.json exists.');
+        console.error(error);
+      }
+    }
+
+    function populateClasses() {
+      classSelect.innerHTML = '<option value="">Select Class</option>';
+      catalog.classes.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        classSelect.appendChild(option);
+      });
+    }
+
+    function populateSubjects(classId) {
+      subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      chapterSelect.disabled = true;
+      searchInput.disabled = true;
+      searchInput.value = '';
+      clearChapter();
+
+      const selectedClass = catalog.classes.find(item => item.id === classId);
+      if (!selectedClass) {
+        subjectSelect.disabled = true;
+        return;
+      }
+
+      selectedClass.subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject.id;
+        option.textContent = subject.name;
+        subjectSelect.appendChild(option);
+      });
+
+      subjectSelect.disabled = false;
+    }
+
+    async function loadSubjectData(classId, subjectId) {
+      const selectedClass = catalog.classes.find(item => item.id === classId);
+      const selectedSubject = selectedClass?.subjects.find(item => item.id === subjectId);
+      if (!selectedClass || !selectedSubject) {
+        currentSubjectData = null;
+        return;
+      }
+
+      setStatus('Loading subject content...');
+      chapterContent.hidden = true;
+
+      try {
+        const response = await fetch(selectedSubject.file);
+        if (!response.ok) throw new Error('Could not load subject JSON');
+        currentSubjectData = await response.json();
+        populateChapters(currentSubjectData.chapters || []);
+        setStatus('Select a chapter to view questions and answers.');
+      } catch (error) {
+        currentSubjectData = null;
+        setStatus('Could not load this subject file. Check the path in catalog.json.');
+        console.error(error);
+      }
+    }
+
+    function populateChapters(chapters) {
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      clearChapter();
+
+      if (!chapters.length) {
+        chapterSelect.disabled = true;
+        return;
+      }
+
+      chapters.forEach(chapter => {
+        const option = document.createElement('option');
+        option.value = chapter.id;
+        option.textContent = chapter.name;
+        chapterSelect.appendChild(option);
+      });
+
+      chapterSelect.disabled = false;
+    }
+
+    function renderChapter(chapterId) {
+      if (!currentSubjectData) return;
+      const chapter = currentSubjectData.chapters.find(item => item.id === chapterId);
+      currentChapter = chapter || null;
+
+      if (!chapter) {
+        clearChapter();
+        return;
+      }
+
+      searchInput.disabled = false;
+      chapterTitle.textContent = chapter.name;
+      chapterMeta.textContent = `${currentSubjectData.className} • ${currentSubjectData.subjectName}`;
+      breadcrumbsEl.textContent = `${currentSubjectData.className} / ${currentSubjectData.subjectName} / ${chapter.name}`;
+      questionCount.textContent = `${chapter.questions.length} Questions`;
+      chapterContent.hidden = false;
+      statusEl.textContent = '';
+      renderQuestions(chapter.questions, searchInput.value.trim());
+      syncUrl();
+    }
+
+    function renderQuestions(questions, keyword = '') {
+      const query = keyword.toLowerCase();
+      const filtered = questions.filter(item => {
+        if (!query) return true;
+        return item.question.toLowerCase().includes(query) || item.answer.toLowerCase().includes(query);
+      });
+
+      qaList.innerHTML = '';
+
+      if (!filtered.length) {
+        qaList.innerHTML = '<p class="status">No questions matched your search.</p>';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = 'qa-card';
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = `${index + 1}. ${item.question}`;
+        button.addEventListener('click', () => {
+          card.classList.toggle('open');
+        });
+
+        const answer = document.createElement('div');
+        answer.className = 'qa-answer';
+        answer.innerHTML = `<p>${escapeHtml(item.answer).replace(/\n/g, '<br>')}</p>`;
+
+        card.appendChild(button);
+        card.appendChild(answer);
+        qaList.appendChild(card);
+      });
+    }
+
+    function clearChapter() {
+      currentChapter = null;
+      chapterContent.hidden = true;
+      qaList.innerHTML = '';
+      breadcrumbsEl.textContent = 'No chapter selected';
+      statusEl.textContent = 'Choose a class, subject, and chapter to load content.';
+      syncUrl();
+    }
+
+    function setStatus(message) {
+      chapterContent.hidden = true;
+      statusEl.textContent = message;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    classSelect.addEventListener('change', async () => {
+      const classId = classSelect.value;
+      subjectSelect.value = '';
+      chapterSelect.value = '';
+      subjectSelect.disabled = true;
+      chapterSelect.disabled = true;
+      currentSubjectData = null;
+      populateSubjects(classId);
+      syncUrl();
+    });
+
+    subjectSelect.addEventListener('change', async () => {
+      const classId = classSelect.value;
+      const subjectId = subjectSelect.value;
+      chapterSelect.value = '';
+      searchInput.value = '';
+      clearChapter();
+      if (!classId || !subjectId) return;
+      await loadSubjectData(classId, subjectId);
+      syncUrl();
+    });
+
+    chapterSelect.addEventListener('change', () => {
+      renderChapter(chapterSelect.value);
+    });
+
+    searchInput.addEventListener('input', () => {
+      if (!currentChapter) return;
+      renderQuestions(currentChapter.questions, searchInput.value.trim());
+    });
+
+    function syncUrl() {
+      const params = new URLSearchParams();
+      if (classSelect.value) params.set('class', classSelect.value);
+      if (subjectSelect.value) params.set('subject', subjectSelect.value);
+      if (chapterSelect.value) params.set('chapter', chapterSelect.value);
+      const query = params.toString();
+      const nextUrl = query ? `${location.pathname}?${query}` : location.pathname;
+      history.replaceState(null, '', nextUrl);
+    }
+
+    async function hydrateFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const classId = params.get('class');
+      const subjectId = params.get('subject');
+      const chapterId = params.get('chapter');
+
+      if (!classId) return;
+      classSelect.value = classId;
+      populateSubjects(classId);
+
+      if (!subjectId) return;
+      subjectSelect.value = subjectId;
+      await loadSubjectData(classId, subjectId);
+
+      if (!chapterId) return;
+      chapterSelect.value = chapterId;
+      renderChapter(chapterId);
+    }
+
+    loadCatalog();
+  </script>
+</body>
+</html>
