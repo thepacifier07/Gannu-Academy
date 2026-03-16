@@ -1,0 +1,31 @@
+{
+  "classes": [
+    {
+      "id": "class-6",
+      "name": "Class 6",
+      "subjects": [
+        {
+          "id": "science",
+          "name": "Science",
+          "file": "./data/class-6-science.json"
+        },
+        {
+          "id": "math",
+          "name": "Math",
+          "file": "./data/class-6-math.json"
+        }
+      ]
+    },
+    {
+      "id": "class-7",
+      "name": "Class 7",
+      "subjects": [
+        {
+          "id": "english",
+          "name": "English",
+          "file": "./data/class-7-english.json"
+        }
+      ]
+    }
+  ]
+}
