@@ -1,0 +1,53 @@
+{
+  "classes": [
+    {
+      "name": "Class 6",
+      "subjects": [
+        {
+          "name": "Science",
+          "chapters": [
+            {
+              "id": "chapter-1",
+              "title": "Food: Where Does It Come From?",
+              "qa": [
+                {
+                  "question": "What do herbivores eat?",
+                  "answer": "Herbivores eat plants."
+                },
+                {
+                  "question": "Give two examples of food from plants.",
+                  "answer": "Rice and apple."
+                }
+              ]
+            },
+            {
+              "id": "chapter-2",
+              "title": "Components of Food",
+              "qa": [
+                {
+                  "question": "What are nutrients?",
+                  "answer": "Nutrients are useful components in food needed by the body."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Math",
+          "chapters": [
+            {
+              "id": "chapter-1",
+              "title": "Knowing Our Numbers",
+              "qa": [
+                {
+                  "question": "What is the successor of 999?",
+                  "answer": "1000"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
